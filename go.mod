@@ -5,6 +5,7 @@ go 1.16
 require (
 	github.com/gin-gonic/gin v1.7.4
 	github.com/golang/protobuf v1.4.3 // indirect
+	github.com/ilyakaznacheev/cleanenv v1.2.5
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.5.1 // indirect
