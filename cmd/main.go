@@ -12,6 +12,9 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/BenjaminCallahan/my-bank-service/internal/api"
+	"github.com/BenjaminCallahan/my-bank-service/internal/repository"
+	"github.com/BenjaminCallahan/my-bank-service/internal/repository/sqlite"
+	"github.com/BenjaminCallahan/my-bank-service/internal/service"
 )
 
 func main() {
@@ -19,7 +22,16 @@ func main() {
 		FullTimestamp: true,
 	})
 
-	handlers := api.NewHandler()
+	db, err := sqlite.NewConnectDB(sqlite.Config{
+		DBName: "",
+	})
+	if err != nil {
+		logrus.Fatalf("failed to initialize db: %s\n", err.Error())
+	}
+
+	repo := repository.NewRepository(db)
+	service := service.NewService(repo)
+	handlers := api.NewHandler(service)
 
 	srv := api.NewServer("", handlers.InitRoutes())
 	go func() {

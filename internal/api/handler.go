@@ -2,12 +2,15 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+
+	"github.com/BenjaminCallahan/my-bank-service/internal/service"
 )
 
 type Handler struct {
+	service *service.Service
 }
 
-func NewHandler() *Handler {
+func NewHandler(service *service.Service) *Handler {
 	return &Handler{}
 }
 
