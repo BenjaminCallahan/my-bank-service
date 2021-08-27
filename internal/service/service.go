@@ -1,5 +1,9 @@
 package service
 
+import (
+	"github.com/BenjaminCallahan/my-bank-service/internal/repository"
+)
+
 type BankAccount interface {
 	// AddFunds Allows you to deposit the amount sum
 	AddFunds(sum float64) error
@@ -14,4 +18,14 @@ type BankAccount interface {
 	GetAccountCurrencyRate(cur string) (float64, error)
 	// GetBalance Returns the account balance in the specified currency
 	GetBalance(cur string) (float64, error)
+}
+
+type Service struct {
+	BankAccount
+}
+
+func NewService(repo *repository.Repository) *Service {
+	return &Service{
+		BankAccount: NewAccountService(repo.Account),
+	}
 }
