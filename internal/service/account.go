@@ -1,13 +1,28 @@
 package service
 
 import (
+	"github.com/BenjaminCallahan/my-bank-service/internal/domain"
 	"github.com/BenjaminCallahan/my-bank-service/internal/repository"
+	"github.com/shopspring/decimal"
 )
 
+const (
+	// number of characters after decimal point
+	fractPartSBP int32 = 2
+
+	// perecent of accumulation on the user bank account
+	accumPercent float64 = 0.06
+
+	// maximum allowed percentage of withdrawing money from the account
+	maxWithdrawAmountPercent float64 = 0.7
+)
+
+// AccountService represent Account Service
 type AccountService struct {
 	repo repository.Account
 }
 
+// NewAccountService creates a new AccountService
 func NewAccountService(repo repository.Account) *AccountService {
 	return &AccountService{repo: repo}
 }
