@@ -4,6 +4,7 @@ import (
 	"github.com/BenjaminCallahan/my-bank-service/internal/repository"
 )
 
+// BankAccount wrap methods for working with user account of bank 
 type BankAccount interface {
 	// AddFunds Allows you to deposit the amount sum
 	AddFunds(sum float64) error
@@ -20,10 +21,12 @@ type BankAccount interface {
 	GetBalance(cur string) (float64, error)
 }
 
+// Service represent all Services
 type Service struct {
 	BankAccount
 }
 
+// NewService creates a new Service
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
 		BankAccount: NewAccountService(repo.Account),
