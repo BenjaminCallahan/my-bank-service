@@ -56,7 +56,27 @@ func (h *Handler) deposit(c *gin.Context) {
 
 // withdraw allows to withdrawing  amount from a bank account
 func (h *Handler) withdraw(c *gin.Context) {
+	var input amountInput
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
+		errMsg := "invalid input body"
+		logrus.WithField("handler", "withdraw").Errorf("%s: %s\n", errMsg, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, errMsg)
+		return
+	}
 
+	if err := h.service.BankAccount.Withdraw(input.Amount); err != nil {
+		if errors.Is(err, domain.ErrNotEnoughMoney) {
+			newErrorResponse(c, http.StatusBadRequest, domain.ErrNotEnoughMoney.Error())
+			return
+		}
+		errMsg := "failed to withdraw amount"
+		logrus.WithField("handler", "withdraw").Errorf("%s: %s\n", errMsg, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, errMsg)
+		return
+	}
+
+	c.Status(http.StatusOK)
 }
 
 type currencyInput struct {

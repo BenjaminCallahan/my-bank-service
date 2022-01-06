@@ -39,7 +39,24 @@ func (s *AccountService) sumProfit() error {
 	return nil
 }
 
+// Withdraw Performs withdrawals from the account according to the specified rules.
+// If the write-off goes beyond the rules, it gives an error
 func (s *AccountService) Withdraw(cashOutAmount float64) error {
+	decCashOutAmount := decimal.NewFromFloat(cashOutAmount)
+	withdrawCondition := func(amountInBankAccount decimal.Decimal) (bool, error) {
+		maxAllowedAmountCash := amountInBankAccount.Mul(decimal.NewFromFloat(maxWithdrawAmountPercent))
+
+		// as the condition requires
+		// not more than 70% of the amount on the account
+		if !decCashOutAmount.LessThanOrEqual(maxAllowedAmountCash) {
+			return false, domain.ErrNotEnoughMoney
+		}
+		return true, nil
+	}
+	err := s.repo.UpdateWithFn(decCashOutAmount.Neg(), withdrawCondition)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

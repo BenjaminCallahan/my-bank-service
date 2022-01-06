@@ -74,3 +74,33 @@ func (a *Account) ProcessedTransferWithFn(fn func(decimal.Decimal, []domain.Tran
 	}
 	return nil
 }
+
+
+// UpdateWithFn update user account for the provided condition
+func (a *Account) UpdateWithFn(cashOutAmount decimal.Decimal, fn func(amountInBankAccount decimal.Decimal) (bool, error)) error {
+	if err := a.execTx(func(q *Queries) error {
+		bankAccount, err := q.GetUserAccount()
+		if err != nil {
+			return err
+		}
+
+		hasEnoughMoney, err := fn(bankAccount.Balance)
+		if err != nil {
+			return err
+		}
+		if hasEnoughMoney {
+			balance, err := q.updateAccountBalance(bankAccount.Balance.Add(cashOutAmount))
+			if err != nil {
+				return err
+			}
+			logrus.Infof("balance after UpdateWithCallback %v", balance)
+			return nil
+		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
