@@ -72,7 +72,13 @@ func (s *AccountService) GetCurrency() (string, error) {
 
 // GetAccountCurrencyRate Returns the account currency rate to the transmitted currency cur
 func (s *AccountService) GetAccountCurrencyRate(currency string) (float64, error) {
-	return 0.0, nil
+	accountWithCurrencyRate, err := s.repo.GetAccountCurrencyRate(currency)
+	if err != nil {
+		return 0, err
+	}
+
+	exchangeRateInf64, _ := accountWithCurrencyRate.ExchageRate.Float64()
+	return exchangeRateInf64, nil
 }
 
 // GetBalance Returns the account balance in the specified currency
