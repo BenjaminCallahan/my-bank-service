@@ -1,8 +1,10 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"
+	"errors"
+	"net/http"
 
+	"github.com/BenjaminCallahan/my-bank-service/internal/domain"
 	"github.com/BenjaminCallahan/my-bank-service/internal/service"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
