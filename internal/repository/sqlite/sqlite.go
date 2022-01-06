@@ -12,10 +12,12 @@ import (
 	_ "modernc.org/sqlite"
 )
 
+// Config represent entity of database configuration
 type Config struct {
 	DBName string
 }
 
+// NewConnectDB creates a new connection to database
 func NewConnectDB(cfg Config) (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", cfg.DBName)
 	if err != nil {
@@ -32,6 +34,7 @@ func NewConnectDB(cfg Config) (*sql.DB, error) {
 	return db, nil
 }
 
+// initDBIfNotExists intitialize starting migrations if they do not exists
 func initDBIfNotExists(db *sql.DB) error {
 	dbDriver, err := sqlite3.WithInstance(db, &sqlite3.Config{})
 	if err != nil {
