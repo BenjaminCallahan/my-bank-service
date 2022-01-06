@@ -12,10 +12,10 @@ type Server struct {
 }
 
 // NewServer creates a new entity of Server
-func NewServer(address string, handler http.Handler) *Server {
+func NewServer(port string, handler http.Handler) *Server {
 	return &Server{
 		&http.Server{
-			Addr:           address,
+			Addr:           ":" + port,
 			Handler:        handler,
 			MaxHeaderBytes: 1 << 20, // 1 MB
 			ReadTimeout:    10 * time.Second,
