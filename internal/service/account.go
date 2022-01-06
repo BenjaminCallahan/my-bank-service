@@ -68,6 +68,16 @@ func (s *AccountService) GetAccountCurrencyRate(currency string) (float64, error
 	return 0.0, nil
 }
 
+// GetBalance Returns the account balance in the specified currency
 func (s *AccountService) GetBalance(currency string) (float64, error) {
-	return 0.0, nil
+	accountWithCurrencyRate, err := s.repo.GetAccountCurrencyRate(currency)
+	if err != nil {
+		return 0, err
+	}
+
+	balanceInf64, _ := accountWithCurrencyRate.Balance.
+		Mul(accountWithCurrencyRate.ExchageRate).
+		Round(fractPartSBP).
+		Float64()
+	return balanceInf64, nil
 }

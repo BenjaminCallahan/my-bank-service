@@ -79,12 +79,30 @@ func (h *Handler) withdraw(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
+// input body of currency
 type currencyInput struct {
 	Currency string `form:"currency,omitempty" binding:"omitempty,oneof=SBP RUB"`
 }
 
+// balance provides information about a user balance
 func (h *Handler) balance(c *gin.Context) {
+	var input currencyInput
+	err := c.ShouldBindQuery(&input)
+	if err != nil {
+		errMsg := "invalid input body"
+		logrus.WithField("handler", "balance").Errorf("%s: %s\n", errMsg, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, errMsg)
+		return
+	}
 
+	balance, err := h.service.BankAccount.GetBalance(input.Currency)
+	if err != nil {
+		errMsg := "failed to get balance"
+		logrus.WithField("handler", "balance").Errorf("%s: %s\n", errMsg, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, errMsg)
+		return
+	}
+	c.JSON(http.StatusOK, balance)
 }
 
 func (h *Handler) currency(c *gin.Context) {

@@ -75,6 +75,35 @@ func (a *Account) ProcessedTransferWithFn(fn func(decimal.Decimal, []domain.Tran
 	return nil
 }
 
+// GetAccountCurrencyRate get account information with currency rate of his account
+func (q *Queries) GetAccountCurrencyRate(currency string) (domain.AccExchangeRate, error) {
+	var dest domain.AccExchangeRate
+	query := `
+	SELECT
+		accounts.balance,
+		currencies.name,
+		(
+			case
+				WHEN ?1 == ''
+				OR currencies.name == ?1 THEN 1
+				WHEN ?1 == 'RUB' THEN (
+					SELECT
+						exchange_rate
+					FROM
+						currency_rate
+				)
+			END
+		) currency_rate
+	FROM
+		accounts
+		INNER JOIN currencies ON accounts.currency_id == currencies.id;
+	`
+	if err := q.dbTx.QueryRow(query, currency).Scan(&dest.Balance, &dest.CurrencyName, &dest.ExchageRate); err != nil {
+		return dest, err
+	}
+
+	return dest, nil
+}
 
 // UpdateWithFn update user account for the provided condition
 func (a *Account) UpdateWithFn(cashOutAmount decimal.Decimal, fn func(amountInBankAccount decimal.Decimal) (bool, error)) error {
