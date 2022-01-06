@@ -1,3 +1,23 @@
+## Запуск приложения
+### Зависимости
+- go 1.17.5
+- docker
+
+Сборка образа
+```
+docker build -t my-bank-service .
+```
+Запуск контейнера
+```
+docker run --name my-bank-service_container \
+    -p 8080:8080 \
+    -e GIN_MODE=release \
+    -v external-folder_sqlite:/usr/local/bin/app/sqlite_database/ \
+    my-bank-service 
+```
+
+
+
 ## Задача
 Написать сервис личного банка, взаимодействие с которым реализуется по REST API.
 Необходимо предоставить работающий сервис и описание API (желательно Postman коллекцией с тестами на указанные кейсы).
