@@ -105,6 +105,14 @@ func (h *Handler) balance(c *gin.Context) {
 	c.JSON(http.StatusOK, balance)
 }
 
+// currency provides information about the currency of a user bank account
 func (h *Handler) currency(c *gin.Context) {
-
+	accountCurrency, err := h.service.GetCurrency()
+	if err != nil {
+		errMsg := "failed to get currency"
+		logrus.WithField("handler", "currency").Errorf("%s: %s\n", errMsg, err.Error())
+		newErrorResponse(c, http.StatusInternalServerError, errMsg)
+		return
+	}
+	c.JSON(http.StatusOK, accountCurrency)
 }

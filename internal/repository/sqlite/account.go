@@ -75,6 +75,25 @@ func (a *Account) ProcessedTransferWithFn(fn func(decimal.Decimal, []domain.Tran
 	return nil
 }
 
+// GetUserAccount get all information about user account
+func (q *Queries) GetUserAccount() (domain.BankAccount, error) {
+	var dest domain.BankAccount
+	err := q.dbTx.QueryRow("SELECT * FROM accounts").Scan(&dest.ID, &dest.Balance, &dest.Currency)
+	if err != nil {
+		return dest, err
+	}
+	return dest, err
+}
+
+// updateAccountBalance update balance of user account
+func (q *Queries) updateAccountBalance(amount decimal.Decimal) (decimal.Decimal, error) {
+	var balance decimal.Decimal
+	if err := q.dbTx.QueryRow("UPDATE accounts SET balance = ? RETURNING balance", amount).Scan(&balance); err != nil {
+		return balance, err
+	}
+	return balance, nil
+}
+
 // GetAccountCurrencyRate get account information with currency rate of his account
 func (q *Queries) GetAccountCurrencyRate(currency string) (domain.AccExchangeRate, error) {
 	var dest domain.AccExchangeRate

@@ -60,10 +60,17 @@ func (s *AccountService) Withdraw(cashOutAmount float64) error {
 	return nil
 }
 
+// GetCurrency Returns the account currency
 func (s *AccountService) GetCurrency() (string, error) {
-	return "", nil
+	userBankAcoount, err := s.repo.GetUserAccount()
+	if err != nil {
+		return "", err
+	}
+
+	return userBankAcoount.Currency, nil
 }
 
+// GetAccountCurrencyRate Returns the account currency rate to the transmitted currency cur
 func (s *AccountService) GetAccountCurrencyRate(currency string) (float64, error) {
 	return 0.0, nil
 }
