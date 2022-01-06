@@ -39,7 +39,7 @@ func main() {
 	service := service.NewService(repo)
 	handlers := api.NewHandler(service)
 
-	srv := api.NewServer(cfg.Port, handlers.InitRoutes())
+	srv := api.NewServer(cfg.Address, handlers.InitRoutes())
 	go func() {
 		if err := srv.Run(); !errors.Is(err, http.ErrServerClosed) {
 			logrus.Fatalf("error occurred while running server: %s\n", err.Error())
